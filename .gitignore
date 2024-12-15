@@ -1,0 +1,9 @@
+.data
+.nitro
+.output
+dist
+node_modules
+*.log*
+.DS_Store
+.env
+.eslintcache

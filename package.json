@@ -1,0 +1,45 @@
+{
+  "name": "wallet-hunting-bot",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@9.12.1",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development tsx scripts/prepare.ts && nitro dev",
+    "build": "cross-env NODE_ENV=production tsx scripts/prepare.ts && nitro build",
+    "preview": "node .output/server/index.mjs",
+    "test:types": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier \"**/*.{css,html,json,md,ts,tsx,yml}\" --write",
+    "prepare": "NITRO_PREPARE=true nitro prepare"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^3.7.3",
+    "@grammyjs/conversations": "^1.2.0",
+    "@grammyjs/emoji": "^1.2.0",
+    "@grammyjs/menu": "^1.2.2",
+    "cheerio": "^1.0.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^9.12.0",
+    "grammy": "^1.30.0",
+    "nitropack": "^2.9.7",
+    "prettier": "^3.3.3",
+    "socks-proxy-agent": "^8.0.5",
+    "tsx": "^4.19.1",
+    "typescript": "^5.5.4",
+    "valibot": "^1.0.0-beta.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "function-bind": "npm:@socketregistry/function-bind@^1",
+      "hasown": "npm:@socketregistry/hasown@^1",
+      "indent-string": "npm:@socketregistry/indent-string@^1",
+      "is-core-module": "npm:@socketregistry/is-core-module@^1",
+      "isarray": "npm:@socketregistry/isarray@^1",
+      "object-assign": "npm:@socketregistry/object-assign@^1",
+      "path-parse": "npm:@socketregistry/path-parse@^1",
+      "safe-buffer": "npm:@socketregistry/safe-buffer@^1",
+      "safer-buffer": "npm:@socketregistry/safer-buffer@^1"
+    }
+  }
+}

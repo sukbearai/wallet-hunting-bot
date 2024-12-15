@@ -1,0 +1,8 @@
+name = "wallet-hunting-bot"
+pages_build_output_dir = "./dist"
+compatibility_date = "2024-08-23"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "93983d17ef7645dbb51f08a5d0dc3a06"
+
