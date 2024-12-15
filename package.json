@@ -1,6 +1,7 @@
 {
   "name": "wallet-hunting-bot",
   "type": "module",
+  "version": "0.0.2",
   "private": true,
   "packageManager": "pnpm@9.12.1",
   "scripts": {
@@ -12,13 +13,15 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier \"**/*.{css,html,json,md,ts,tsx,yml}\" --write",
     "prepare": "NITRO_PREPARE=true nitro prepare",
-    "webhook": "npx nitro task run telegram:setBot"
+    "webhook": "npx nitro task run telegram:setBot",
+    "release": "bumpp"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
     "@grammyjs/conversations": "^1.2.0",
     "@grammyjs/emoji": "^1.2.0",
     "@grammyjs/menu": "^1.2.2",
+    "bumpp": "^9.9.1",
     "cheerio": "^1.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^9.12.0",
