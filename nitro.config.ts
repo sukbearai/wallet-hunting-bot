@@ -8,9 +8,10 @@ export default defineNitroConfig({
   runtimeConfig: {
     site: {
       url:
-        process.env.NODE_ENV !== 'production'
-          ? 'https://tunnels.sukbearai.xyz'
-          : 'https://bot.sukbearai.xyz',
+        // 调试使用 process.env.NODE_ENV !== 'production'
+        process.env.NODE_ENV === 'production'
+          ? 'https://tunnels.sukbearai.xyz' // 本地调试
+          : 'https://bot.sukbearai.xyz', // 线上部署
     },
 
     telegram: {

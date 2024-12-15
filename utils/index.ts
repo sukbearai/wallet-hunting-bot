@@ -1,4 +1,5 @@
 import process from 'node:process'
+import { ofetch } from 'ofetch'
 import { SocksProxyAgent } from 'socks-proxy-agent'
 import { ProxyAgent } from 'undici'
 
@@ -20,3 +21,5 @@ export const getHttpProxyConfig = () => {
 export const getSocksProxyAgent = () => {
   return isDev ? new SocksProxyAgent(PROXY_CONFIG.SOCKS) : undefined
 }
+
+export const fetchWithProxy = ofetch.create(getHttpProxyConfig())

@@ -3,11 +3,9 @@ import * as path from 'node:path'
 import process from 'node:process'
 import * as url from 'node:url'
 import { consola } from 'consola'
-import { ofetch } from 'ofetch'
-import { getHttpProxyConfig } from '../utils'
+import { fetchWithProxy } from '../utils'
 import 'dotenv/config'
 
-const fetchOptions = getHttpProxyConfig()
 const rootDir = url.fileURLToPath(new URL('..', import.meta.url))
 const envPath = path.join(rootDir, '.env')
 
@@ -20,9 +18,8 @@ async function prepareTelegramBotInfo() {
     process.exit(1)
   }
 
-  const response = await ofetch<Record<string, any>>(
+  const response = await fetchWithProxy<Record<string, any>>(
     `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getMe`,
-    fetchOptions,
   )
 
   if (process.env.TELEGRAM_BOT_INFO) {
