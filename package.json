@@ -15,6 +15,7 @@
     "test:types": "tsc --noEmit"
   },
   "dependencies": {
+    "agent-twitter-client": "^0.0.16",
     "nitropack": "latest",
     "socks-proxy-agent": "^8.0.5",
     "telegraf": "^4.16.3"

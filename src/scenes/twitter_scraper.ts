@@ -1,15 +1,35 @@
+import { Scraper } from 'agent-twitter-client'
 import { Scenes } from 'telegraf'
 
-export const twitterScraper = new Scenes.BaseScene<Scenes.SceneContext>('twitter_scraper')
+export const twitterScraper = new Scenes.BaseScene<Scenes.SceneContext>(
+  'twitter_scraper',
+)
 
 twitterScraper.enter(async (ctx) => {
-  await ctx.reply('请输入推特ID:')
+  await ctx.reply('请输入推特号，如@elonmusk')
 })
 
 twitterScraper.on('text', async (ctx) => {
-  const twitterId = ctx.message.text
-  await ctx.reply(`收到推特ID: ${twitterId}, 开始处理...`)
+  const msg = ctx.message.text
+  switch (msg) {
+    case '@elonmusk':
+      await ctx.reply('https://twitter.com/elonmusk')
+      twitterScraperMiddleware()
+      break
+    case '@VitalikButerin':
+      await ctx.reply('https://twitter.com/VitalikButerin')
+      twitterScraperMiddleware()
+      break
+    default:
+      await ctx.reply('未找到该用户')
+      break
+  }
   // TODO: 处理推特逻辑
   await ctx.scene.leave()
 })
 
+async function twitterScraperMiddleware() {
+  const scraper = new Scraper()
+  const res = await scraper.login('username', 'password')
+  console.log(res)
+}
