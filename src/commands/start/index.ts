@@ -1,9 +1,9 @@
 import type { Context } from 'telegraf'
 import { Markup } from 'telegraf'
-import { getTwitterBase } from '~/src/twitter/'
+import { startTwitterMonitoring } from '~/src/twitter/'
 
 export const startCommand = async (ctx: Context) => {
-  const twitter = await getTwitterBase()
+  await startTwitterMonitoring()
 
   const listId = `1874371459138937189`
   const TWITTER_LIST_URL = `https://x.com/i/lists/${listId}`
@@ -25,6 +25,4 @@ export const startCommand = async (ctx: Context) => {
       parse_mode: 'Markdown',
     },
   )
-
-  await twitter.fetchExtractTweetFromList(listId)
 }

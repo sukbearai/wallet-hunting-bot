@@ -1,10 +1,8 @@
-import { TwitterBase } from './base'
+import { TwitterManager } from './base'
 import { validateTwitterConfig } from './environment'
 
-export async function getTwitterBase() {
+export async function startTwitterMonitoring() {
   const config = await validateTwitterConfig()
-  const twitterBase = new TwitterBase(config)
-  await twitterBase.init()
-
-  return twitterBase
+  const twitterManager = new TwitterManager(config)
+  await twitterManager.init()
 }

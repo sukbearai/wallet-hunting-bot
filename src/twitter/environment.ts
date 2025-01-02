@@ -1,4 +1,3 @@
-import type { IAgentRuntime } from './types'
 import { z } from 'zod'
 import { parseBooleanFromText } from './parsing'
 export const DEFAULT_MAX_TWEET_LENGTH = 280

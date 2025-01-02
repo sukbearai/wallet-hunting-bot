@@ -14,7 +14,7 @@ interface TwitterProfile {
   bio: string
 }
 
-export class TwitterBase {
+export class TwitterManager {
   static _twitterClients: { [accountIdentifier: string]: Scraper } = {}
   twitterClient: Scraper
   requestQueue: RequestQueue = new RequestQueue()
@@ -25,11 +25,11 @@ export class TwitterBase {
     this.twitterConfig = twitterConfig
     const username = twitterConfig.TWITTER_USERNAME
     this.twitterClient = this.getProxyScraper()
-    if (TwitterBase._twitterClients[username]) {
-      this.twitterClient = TwitterBase._twitterClients[username]
+    if (TwitterManager._twitterClients[username]) {
+      this.twitterClient = TwitterManager._twitterClients[username]
     } else {
       this.twitterClient = this.getProxyScraper()
-      TwitterBase._twitterClients[username] = this.twitterClient
+      TwitterManager._twitterClients[username] = this.twitterClient
     }
   }
 
@@ -69,7 +69,7 @@ export class TwitterBase {
             // fresh login, store new cookies
             consola.info('Successfully logged in. 🚀')
             consola.info('Caching cookies')
-            generateCookiesFile(await this.twitterClient.getCookies())
+            await generateCookiesFile(await this.twitterClient.getCookies())
             break
           }
         }

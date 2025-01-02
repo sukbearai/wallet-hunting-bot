@@ -3,7 +3,7 @@ import * as fs from 'node:fs'
 import path from 'node:path'
 import { consola } from './log'
 
-export function generateCookiesFile(cookie: any[]): boolean {
+export async function generateCookiesFile(cookie: any[]): Promise<boolean> {
   try {
     const rootDir = process.cwd()
     const cookiesPath = path.join(rootDir, 'cookies.json')
