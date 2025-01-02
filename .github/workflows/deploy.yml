@@ -1,0 +1,29 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  NITRO_PRESET: cloudflare_pages
+  BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+  TOKEN: ${{ secrets.TOKEN }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v3
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 23
+          cache: pnpm
+
+      - run: pnpm install
+      # - run: pnpm run build
+
+      # - name: Deploy to Cloudflare
+      #   run: npx wrangler pages deploy

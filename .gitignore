@@ -1,0 +1,15 @@
+node_modules
+*.log*
+.nitro
+.cache
+.output
+dist
+.eslintcache
+.DS_Store
+
+# Local Netlify folder
+.netlify
+.vercel
+.env
+cookies.json
+logs
