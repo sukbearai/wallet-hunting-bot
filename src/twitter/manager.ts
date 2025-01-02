@@ -4,7 +4,7 @@ import * as fs from 'node:fs'
 import { Scraper } from 'agent-twitter-client'
 import { ProxyAgent, setGlobalDispatcher } from 'undici'
 import { generateCookiesFile } from '~~/src/utils/cookies'
-import { consola } from '~~/src/utils/log'
+import { consola, writeTweetsLog } from '~~/src/utils/log'
 import { RequestQueue } from './queue'
 
 interface TwitterProfile {
@@ -20,6 +20,8 @@ export class TwitterManager {
   requestQueue: RequestQueue = new RequestQueue()
   twitterConfig: TwitterConfig
   profile: TwitterProfile | null = null
+  private isMonitoring: boolean = false
+  private timeoutId: NodeJS.Timeout | null = null
 
   constructor(twitterConfig: TwitterConfig) {
     this.twitterConfig = twitterConfig
@@ -178,10 +180,24 @@ export class TwitterManager {
   }
 
   async fetchExtractTweetFromList(listId: string) {
-    const timeline = await this.requestQueue.add(
-      async () => await this.twitterClient.fetchListTweets(listId, 1),
+    const filterTweets = (tweet: Tweet) => {
+      const tweetDate = new Date(tweet.timeParsed!)
+      const isToday = tweetDate.toDateString() === new Date().toDateString()
+
+      return isToday
+    }
+
+    const listTweets = await this.requestQueue.add(
+      async () => await this.twitterClient.fetchListTweets(listId, 300),
     )
-    return timeline
+    return listTweets.tweets.filter(filterTweets)
+  }
+
+  async handleTwitterMonitoring() {
+    const listTweets = await this.fetchExtractTweetFromList(
+      this.twitterConfig.TWITTER_LIST_ID,
+    )
+    writeTweetsLog(listTweets)
   }
 
   async fetchProfile(username: string): Promise<TwitterProfile | null> {
@@ -212,5 +228,32 @@ export class TwitterManager {
       count,
     )
     return homeTimeline.tweets
+  }
+
+  async startMonitoringPoll() {
+    this.isMonitoring = true
+    const handleTwitterInteractionsLoop = async () => {
+      if (!this.isMonitoring) return
+
+      await this.handleTwitterMonitoring()
+      this.timeoutId = setTimeout(
+        handleTwitterInteractionsLoop,
+        // Defaults to 2 minutes
+        this.twitterConfig.TWITTER_POLL_INTERVAL * 1000,
+      )
+    }
+    handleTwitterInteractionsLoop()
+  }
+
+  stopMonitoringPoll() {
+    this.isMonitoring = false
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId)
+      this.timeoutId = null
+    }
+  }
+
+  async startMonitoringOnce() {
+    await this.handleTwitterMonitoring()
   }
 }

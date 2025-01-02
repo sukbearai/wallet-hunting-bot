@@ -29,6 +29,7 @@ export default defineNitroConfig({
       enableActionProcessing: process.env.ENABLE_ACTION_PROCESSING,
       actionInterval: process.env.ACTION_INTERVAL,
       postImmediately: process.env.POST_IMMEDIATELY,
+      listId: process.env.TWITTER_LIST_ID,
     },
   },
 

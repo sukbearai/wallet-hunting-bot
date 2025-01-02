@@ -2,10 +2,12 @@ import type { Context } from 'telegraf'
 import { Markup } from 'telegraf'
 import { startTwitterMonitoring } from '~/src/twitter/'
 
+const { twitter } = useRuntimeConfig()
+
 export const startCommand = async (ctx: Context) => {
   await startTwitterMonitoring()
 
-  const listId = `1874371459138937189`
+  const listId = twitter.listId
   const TWITTER_LIST_URL = `https://x.com/i/lists/${listId}`
   const AGENT_URL = `https://x.com/0xperi_cat`
 

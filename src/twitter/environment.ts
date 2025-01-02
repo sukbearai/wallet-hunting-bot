@@ -9,6 +9,7 @@ const twitterUsernameSchema = z
   .regex(/^[A-Z]\w*[A-Z0-9]$|^[A-Z]$/i, 'Invalid Twitter username format')
 
 export const twitterEnvSchema = z.object({
+  TWITTER_LIST_ID: z.string(),
   TWITTER_PROXY_URL: z.string(),
   TWITTER_DRY_RUN: z.boolean(),
   TWITTER_USERNAME: z.string().min(1, 'Twitter username is required'),
@@ -88,6 +89,7 @@ const { twitter } = useRuntimeConfig()
 export async function validateTwitterConfig(): Promise<TwitterConfig> {
   try {
     const twitterConfig = {
+      TWITTER_LIST_ID: twitter.listId || '',
       TWITTER_PROXY_URL: twitter.proxyUrl || '',
       TWITTER_DRY_RUN: parseBooleanFromText(twitter.dryRun) ?? false, // parseBooleanFromText return null if "", map "" to false
       TWITTER_USERNAME: twitter.username,
