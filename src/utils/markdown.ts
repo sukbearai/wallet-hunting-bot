@@ -1,3 +1,3 @@
-export const escapeMarkdownV2 = (text: string): string => {
-  return text.replace(/[[\]()>#+\-=|{}.!]/g, '\\$&')
-}
+import removeMd from 'remove-markdown'
+
+export { removeMd }

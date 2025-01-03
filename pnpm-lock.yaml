@@ -26,6 +26,9 @@ importers:
       nitropack:
         specifier: latest
         version: 2.10.4(typescript@5.7.2)(webpack-sources@3.2.3)(xml2js@0.6.2)
+      remove-markdown:
+        specifier: ^0.6.0
+        version: 0.6.0
       socks-proxy-agent:
         specifier: ^8.0.5
         version: 8.0.5
@@ -3073,6 +3076,9 @@ packages:
   regjsparser@0.10.0:
     resolution: {integrity: sha512-qx+xQGZVsy55CH0a1hiVwHmqjLryfh7wQyF5HO07XJ9f7dQMY/gPQHhlyDkIzJKC+x2fUCpCcUODUUUFrm7SHA==}
     hasBin: true
+
+  remove-markdown@0.6.0:
+    resolution: {integrity: sha512-B9g8yo5Zp1wXfZ77M1RLpqI7xrBBERkp7+3/Btm9N/uZV5xhXZjzIxDbCKz7CSj141lWDuCnQuH12DKLUv4Ghw==}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -7053,6 +7059,8 @@ snapshots:
   regjsparser@0.10.0:
     dependencies:
       jsesc: 0.5.0
+
+  remove-markdown@0.6.0: {}
 
   require-directory@2.1.1: {}
 
