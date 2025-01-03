@@ -15,6 +15,7 @@ export default defineNitroConfig({
       authToken: process.env.TOKEN,
       proxyUrl: process.env.TELEGRAM_PROXY_URL,
       tunnelUrl: process.env.TUNNEL_URL,
+      userId: process.env.TELEGRAM_USER_ID,
     },
     twitter: {
       username: process.env.TWITTER_USERNAME,
