@@ -1,5 +1,5 @@
 /* eslint-disable unicorn/number-literal-case */
-import type { UUID } from './types.ts'
+import type { UUID } from '~/src/twitter/types'
 import { sha1 } from 'js-sha1'
 
 export function stringToUuid(target: string | number): UUID {

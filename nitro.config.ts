@@ -2,11 +2,19 @@ import process from 'node:process'
 import 'dotenv/config'
 
 export default defineNitroConfig({
+  serverAssets: [
+    {
+      baseName: 'upload',
+      dir: './upload',
+    },
+  ],
+
   runtimeConfig: {
     telegram: {
       botToken: process.env.BOT_TOKEN,
       authToken: process.env.TOKEN,
       proxyUrl: process.env.TELEGRAM_PROXY_URL,
+      tunnelUrl: process.env.TUNNEL_URL,
     },
     twitter: {
       username: process.env.TWITTER_USERNAME,
@@ -30,6 +38,16 @@ export default defineNitroConfig({
       actionInterval: process.env.ACTION_INTERVAL,
       postImmediately: process.env.POST_IMMEDIATELY,
       listId: process.env.TWITTER_LIST_ID,
+    },
+    fastGpt: {
+      apiKey: process.env.FAST_GPT_API_KEY,
+      apiUrl: process.env.FAST_GPT_API_URL,
+    },
+    oss: {
+      region: process.env.OSS_REGION,
+      accessKeyId: process.env.OSS_ACCESS_KEY_ID,
+      accessKeySecret: process.env.OSS_ACCESS_KEY_SECRET,
+      bucket: process.env.OSS_BUCKET,
     },
   },
 

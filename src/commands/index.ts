@@ -1,11 +1,19 @@
 import type { Context, Scenes, Telegraf } from 'telegraf'
-import { helpCommand } from './help'
-import { startCommand } from './start/'
+import { aiAgentCommand } from './ai_agent'
+import { industryCommand } from './industry'
+import { lotteryCommand } from './lottery'
+import { navigateCommand } from './navigate'
+import { projectCommand } from './project'
+import { startCommand } from './start'
 
 const commands: Record<string, (ctx: Context) => Promise<void> | void> = {
-  help: helpCommand,
+  // twitter_scraper: (ctx: any) => ctx.scene.enter('twitter_scraper'),
   start: startCommand,
-  twitter_scraper: (ctx: any) => ctx.scene.enter('twitter_scraper'),
+  navigate: navigateCommand,
+  ai_agent: aiAgentCommand,
+  industry: industryCommand,
+  lottery: lotteryCommand,
+  project: projectCommand,
 }
 
 export const registerCommands = (

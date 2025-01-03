@@ -1,10 +1,14 @@
 import { bot } from '../src'
 
 export default eventHandler(async () => {
-  bot.telegram.setMyCommands([
+  await bot.telegram.setMyCommands([
     {
       command: '/start',
       description: '开始',
+    },
+    {
+      command: '/navigate',
+      description: '指令集',
     },
     // {
     //   command: '/help',

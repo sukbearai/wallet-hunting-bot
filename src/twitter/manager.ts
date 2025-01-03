@@ -1,10 +1,12 @@
 import type { Tweet } from 'agent-twitter-client'
+import type { APIResponse } from '../types'
 import type { TwitterConfig } from './environment'
 import * as fs from 'node:fs'
 import { Scraper } from 'agent-twitter-client'
 import { ProxyAgent, setGlobalDispatcher } from 'undici'
-import { generateCookiesFile } from '~~/src/utils/cookies'
-import { consola, writeTweetsLog } from '~~/src/utils/log'
+import { generateCookiesFile } from '~/src/utils/cookies'
+import { writeTweetsTxt } from '~/src/utils/file'
+import { consola } from '~/src/utils/log'
 import { RequestQueue } from './queue'
 
 interface TwitterProfile {
@@ -12,6 +14,7 @@ interface TwitterProfile {
   username: string
   screenName: string
   bio: string
+  banner: string
 }
 
 export class TwitterManager {
@@ -180,24 +183,29 @@ export class TwitterManager {
   }
 
   async fetchExtractTweetFromList(listId: string) {
-    const filterTweets = (tweet: Tweet) => {
-      const tweetDate = new Date(tweet.timeParsed!)
-      const isToday = tweetDate.toDateString() === new Date().toDateString()
-
-      return isToday
-    }
-
-    const listTweets = await this.requestQueue.add(
-      async () => await this.twitterClient.fetchListTweets(listId, 300),
+    const listTweets = await this.requestQueue.add(async () =>
+      this.twitterClient.fetchListTweets(listId, 300),
     )
-    return listTweets.tweets.filter(filterTweets)
+    return listTweets.tweets
   }
 
-  async handleTwitterMonitoring() {
-    const listTweets = await this.fetchExtractTweetFromList(
-      this.twitterConfig.TWITTER_LIST_ID,
+  async handleTwitterList(listId: string, filePrefix: string) {
+    const listTweets = await this.fetchExtractTweetFromList(listId)
+
+    const content = this.fetchGptSummarizeTweets(
+      await writeTweetsTxt(listTweets, filePrefix),
     )
-    writeTweetsLog(listTweets)
+    return content
+  }
+
+  async fetchGptSummarizeTweets(fileUrl: string) {
+    const gptSummarizeTweets = await this.requestQueue.add(async () => {
+      const gptSummarizeTweets = await $fetch<APIResponse>(
+        `/fastgpt/summarize/${encodeURIComponent(fileUrl)}`,
+      )
+      return gptSummarizeTweets.choices[0].message.content
+    })
+    return gptSummarizeTweets
   }
 
   async fetchProfile(username: string): Promise<TwitterProfile | null> {
@@ -210,6 +218,7 @@ export class TwitterManager {
           username,
           screenName: profile.name!,
           bio: profile.biography!,
+          banner: profile.banner!,
         } satisfies TwitterProfile
       })
 
@@ -230,12 +239,12 @@ export class TwitterManager {
     return homeTimeline.tweets
   }
 
-  async startMonitoringPoll() {
+  async startMonitoringPoll(listId: string, filePrefix: string) {
     this.isMonitoring = true
     const handleTwitterInteractionsLoop = async () => {
       if (!this.isMonitoring) return
 
-      await this.handleTwitterMonitoring()
+      await this.handleTwitterList(listId, filePrefix)
       this.timeoutId = setTimeout(
         handleTwitterInteractionsLoop,
         // Defaults to 2 minutes
@@ -251,9 +260,5 @@ export class TwitterManager {
       clearTimeout(this.timeoutId)
       this.timeoutId = null
     }
-  }
-
-  async startMonitoringOnce() {
-    await this.handleTwitterMonitoring()
   }
 }

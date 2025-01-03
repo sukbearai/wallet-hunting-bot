@@ -1,10 +1,9 @@
 import { validateTwitterConfig } from './environment'
 import { TwitterManager } from './manager'
 
-export async function startTwitterMonitoring() {
+export async function startTwitterAuth() {
   const config = await validateTwitterConfig()
   const twitterManager = new TwitterManager(config)
   await twitterManager.init()
-  // await twitterManager.startMonitoringPoll()
-  await twitterManager.startMonitoringOnce()
+  return twitterManager
 }
