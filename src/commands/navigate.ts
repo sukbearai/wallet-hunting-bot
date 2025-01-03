@@ -17,9 +17,9 @@ export const navigateCommand = async (ctx: Context) => {
     `
 <b>嗨～</b> 指令列表：
 
-/lottery:    🧙‍♂️彩票流
-/project:   🎄项目方
-/industry:  行业领袖
+/lottery:     🧙‍♂️彩票流
+/project:     🎄项目方
+/industry:    行业领袖
 /ai_agent:  AI Agent赛道
 /keyword:  关键词搜索
 `.trim(),
