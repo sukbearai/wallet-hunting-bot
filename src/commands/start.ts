@@ -12,8 +12,10 @@ export const startCommand = async (ctx: Context) => {
         media: profile.banner,
         caption: `
 <b>推特情报员已启动</b>
-推特用户：${profile.screenName}
-推特签名：${profile.bio}
+<code>
+名字：${profile.screenName}
+签名：${profile.bio}
+</code>
 `.trim(),
         parse_mode: 'HTML',
       },
