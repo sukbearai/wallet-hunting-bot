@@ -2,7 +2,7 @@ import type { Tweet } from 'agent-twitter-client'
 import type { APIResponse } from '../types'
 import type { TwitterConfig } from './environment'
 import * as fs from 'node:fs'
-import { Scraper } from 'agent-twitter-client'
+import { Scraper, SearchMode } from 'agent-twitter-client'
 import { ProxyAgent, setGlobalDispatcher } from 'undici'
 import { generateCookiesFile } from '~/src/utils/cookies'
 import { writeTweetsTxt } from '~/src/utils/file'
@@ -182,30 +182,37 @@ export class TwitterManager {
     return scraper
   }
 
-  async fetchExtractTweetFromList(listId: string) {
+  async handleTwitterList(listId: string, filePrefix: string) {
     const listTweets = await this.requestQueue.add(async () =>
       this.twitterClient.fetchListTweets(listId, 300),
     )
-    return listTweets.tweets
-  }
-
-  async handleTwitterList(listId: string, filePrefix: string) {
-    const listTweets = await this.fetchExtractTweetFromList(listId)
 
     const content = this.fetchGptSummarizeTweets(
-      await writeTweetsTxt(listTweets, filePrefix),
+      await writeTweetsTxt(listTweets.tweets, filePrefix),
+    )
+    return content
+  }
+
+  async handleTwitterSearchList(keyword: string, filePrefix: string) {
+    consola.log(`searching Twitter for  ${keyword}`)
+    const searchTweets = await this.requestQueue.add(async () =>
+      this.twitterClient.fetchSearchTweets(keyword, 300, SearchMode.Top),
+    )
+
+    const content = this.fetchGptSummarizeTweets(
+      await writeTweetsTxt(searchTweets.tweets, filePrefix),
     )
     return content
   }
 
   async fetchGptSummarizeTweets(fileUrl: string) {
-    const gptSummarizeTweets = await this.requestQueue.add(async () => {
+    const summarizeResult = await this.requestQueue.add(async () => {
       const gptSummarizeTweets = await $fetch<APIResponse>(
         `/fastgpt/summarize/${encodeURIComponent(fileUrl)}`,
       )
       return gptSummarizeTweets.choices[0].message.content
     })
-    return gptSummarizeTweets
+    return summarizeResult
   }
 
   async fetchProfile(username: string): Promise<TwitterProfile | null> {

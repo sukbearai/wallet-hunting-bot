@@ -10,14 +10,6 @@ export default eventHandler(async () => {
       command: '/navigate',
       description: '指令集',
     },
-    // {
-    //   command: '/help',
-    //   description: '帮助',
-    // },
-    // {
-    //   command: '/twitter_scraper',
-    //   description: '推特刮刀',
-    // },
   ])
   return 'OK'
 })

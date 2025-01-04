@@ -1,15 +1,13 @@
 import { type Context, Markup } from 'telegraf'
-import { startTwitterAuth } from '~/src/twitter/'
 
 export const navigateCommand = async (ctx: Context) => {
-  await startTwitterAuth()
   const TWITTER_LIST_URL = `https://x.com/0xperi_cat/lists`
   const AGENT_URL = `https://x.com/0xperi_cat`
 
   const keyboard = Markup.inlineKeyboard([
     [
       Markup.button.url('订阅列表', TWITTER_LIST_URL),
-      Markup.button.url('AI Agent', AGENT_URL),
+      Markup.button.url('推特', AGENT_URL),
     ],
   ])
 

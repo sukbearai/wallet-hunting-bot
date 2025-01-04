@@ -36,13 +36,13 @@ export async function writeTweetsTxt(
 
   const tweetsArray = Array.isArray(tweets) ? tweets : [tweets]
 
-  const logEntries = filterTodayTweets(tweetsArray)
+  const tweetsTxtContent = filterTodayTweets(tweetsArray)
     .map((tweet) => {
       return `${JSON.stringify(tweet)}`
     })
     .join('')
 
-  fs.appendFileSync(logFile, logEntries)
+  fs.appendFileSync(logFile, tweetsTxtContent)
 
   const ossUrl = await uploadToAliOss(logFile, filePrefix)
 

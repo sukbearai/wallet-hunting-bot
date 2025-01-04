@@ -7,13 +7,13 @@ import { projectCommand } from './project'
 import { startCommand } from './start'
 
 const commands: Record<string, (ctx: Context) => Promise<void> | void> = {
-  // twitter_scraper: (ctx: any) => ctx.scene.enter('twitter_scraper'),
   start: startCommand,
   navigate: navigateCommand,
   ai_agent: aiAgentCommand,
   industry: industryCommand,
   lottery: lotteryCommand,
   project: projectCommand,
+  keyword: (ctx: any) => ctx.scene.enter('keyword_scene'),
 }
 
 export const registerCommands = (
