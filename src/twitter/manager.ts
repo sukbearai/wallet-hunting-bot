@@ -123,15 +123,20 @@ export class TwitterManager {
   }
 
   async setCookiesFromArray(cookiesArray: any[]) {
-    const cookieStrings = cookiesArray.map(
-      (cookie) =>
-        `${cookie.key}=${cookie.value}; Domain=${cookie.domain}; Path=${cookie.path}; ${
-          cookie.secure ? 'Secure' : ''
-        }; ${cookie.httpOnly ? 'HttpOnly' : ''}; SameSite=${
-          cookie.sameSite || 'Lax'
-        }`,
-    )
-    await this.twitterClient.setCookies(cookieStrings)
+    try {
+      const cookieStrings = cookiesArray.map(
+        (cookie) =>
+          `${cookie.key}=${cookie.value}; Domain=${cookie.domain}; Path=${cookie.path}; ${
+            cookie.secure ? 'Secure' : ''
+          }; ${cookie.httpOnly ? 'HttpOnly' : ''}; SameSite=${
+            cookie.sameSite || 'Lax'
+          }`,
+      )
+      await this.twitterClient.setCookies(cookieStrings)
+    } catch (error) {
+      console.error('Error setting cookies', error)
+      throw error
+    }
   }
 
   getProxyScraper() {
@@ -183,36 +188,76 @@ export class TwitterManager {
   }
 
   async handleTwitterList(listId: string, filePrefix: string) {
-    const listTweets = await this.requestQueue.add(async () =>
-      this.twitterClient.fetchListTweets(listId, 300),
-    )
+    try {
+      consola.log(`searching Twitter for  ${filePrefix}`)
+      const listTweets = await this.requestQueue.add(async () =>
+        this.twitterClient.fetchListTweets(listId, 300),
+      )
 
-    const content = this.fetchGptSummarizeTweets(
-      await writeTweetsTxt(listTweets.tweets, filePrefix),
-    )
-    return content
+      const content = await this.fetchGptSummarizeTweets(
+        await writeTweetsTxt(listTweets.tweets, filePrefix),
+      )
+      return content
+    } catch (error) {
+      consola.error(`Error handling Twitter list ${listId}:`, error)
+      return ''
+    }
   }
 
   async handleTwitterSearchList(keyword: string, filePrefix: string) {
-    consola.log(`searching Twitter for  ${keyword}`)
-    const searchTweets = await this.requestQueue.add(async () =>
-      this.twitterClient.fetchSearchTweets(keyword, 300, SearchMode.Top),
-    )
+    try {
+      consola.log(`searching Twitter for  ${keyword}`)
+      const searchTweets = await this.requestQueue.add(async () =>
+        this.twitterClient.fetchSearchTweets(keyword, 300, SearchMode.Top),
+      )
 
-    const content = this.fetchGptSummarizeTweets(
-      await writeTweetsTxt(searchTweets.tweets, filePrefix),
-    )
-    return content
+      const content = await this.fetchGptSummarizeTweets(
+        await writeTweetsTxt(searchTweets.tweets, filePrefix),
+      )
+      return content
+    } catch (error) {
+      consola.error(`Error searching Twitter for ${keyword}:`, error)
+      return ''
+    }
+  }
+
+  async handleTwitterKolList(kol: string, filePrefix: string) {
+    try {
+      consola.log(`searching Twitter for  ${kol}`)
+
+      const tweets: Tweet[] = []
+      const generator = await this.requestQueue.add(async () =>
+        this.twitterClient.getTweetsAndReplies(kol, 300),
+      )
+
+      for await (const tweet of generator) {
+        tweets.push(tweet)
+      }
+
+      consola.log(`Collected ${tweets.length} tweets from ${kol}`)
+      const content = await this.fetchGptSummarizeTweets(
+        await writeTweetsTxt(tweets, filePrefix),
+      )
+      return content
+    } catch (error) {
+      consola.error(`Error handling Twitter KOL ${kol}:`, error)
+      return ''
+    }
   }
 
   async fetchGptSummarizeTweets(fileUrl: string) {
-    const summarizeResult = await this.requestQueue.add(async () => {
-      const gptSummarizeTweets = await $fetch<APIResponse>(
-        `/fastgpt/summarize/${encodeURIComponent(fileUrl)}`,
-      )
-      return gptSummarizeTweets.choices[0].message.content
-    })
-    return summarizeResult
+    try {
+      const summarizeResult = await this.requestQueue.add(async () => {
+        const gptSummarizeTweets = await $fetch<APIResponse>(
+          `/fastgpt/summarize/${encodeURIComponent(fileUrl)}`,
+        )
+        return gptSummarizeTweets.choices[0].message.content
+      })
+      return summarizeResult
+    } catch (error) {
+      consola.error(`Error AI summarizing tweets from ${fileUrl}:`, error)
+      return ''
+    }
   }
 
   async fetchProfile(username: string): Promise<TwitterProfile | null> {
@@ -238,12 +283,17 @@ export class TwitterManager {
   }
 
   async fetchOwnPosts(count: number): Promise<Tweet[]> {
-    consola.debug('fetching own posts')
-    const homeTimeline = await this.twitterClient.getUserTweets(
-      this.profile!.id,
-      count,
-    )
-    return homeTimeline.tweets
+    try {
+      consola.debug('fetching own posts')
+      const homeTimeline = await this.twitterClient.getUserTweets(
+        this.profile!.id,
+        count,
+      )
+      return homeTimeline.tweets
+    } catch (error) {
+      consola.error('Error fetching own posts:', error)
+      return []
+    }
   }
 
   async startMonitoringPoll(listId: string, filePrefix: string) {
@@ -251,10 +301,14 @@ export class TwitterManager {
     const handleTwitterInteractionsLoop = async () => {
       if (!this.isMonitoring) return
 
-      await this.handleTwitterList(listId, filePrefix)
+      try {
+        await this.handleTwitterList(listId, filePrefix)
+      } catch (error) {
+        consola.error('Error in monitoring poll:', error)
+      }
+
       this.timeoutId = setTimeout(
         handleTwitterInteractionsLoop,
-        // Defaults to 2 minutes
         this.twitterConfig.TWITTER_POLL_INTERVAL * 1000,
       )
     }

@@ -1,0 +1,31 @@
+diff --git a/index.js b/index.js
+index 9bc593b0ef8c8623313e93dc73b91650de5b6532..7620b7566256d0ae97be9fc6611bd3ad53fac287 100644
+--- a/index.js
++++ b/index.js
+@@ -36,7 +36,7 @@ module.exports = function(md, options) {
+       // Remove abbreviations
+       output = output.replace(/\*\[.*\]:.*\n/, '');
+     }
+-    
++
+     let htmlReplaceRegex = /<[^>]*>/g
+     if (options.htmlTagsToSkip && options.htmlTagsToSkip.length > 0) {
+       // Create a regex that matches tags not in htmlTagsToSkip
+@@ -58,7 +58,7 @@ module.exports = function(md, options) {
+       // Remove images
+       .replace(/\!\[(.*?)\][\[\(].*?[\]\)]/g, options.useImgAltText ? '$1' : '')
+       // Remove inline links
+-      .replace(/\[([^\]]*?)\][\[\(].*?[\]\)]/g, options.replaceLinksWithURL ? '$2' : '$1')
++      .replace(/\[([\s\S]*?)\](?:\(([^)]+)\)|\[([^\]]+)\])/g, options.replaceLinksWithURL ? '$2' : '$1')
+       // Remove blockquotes
+       .replace(/^(\n)?\s{0,3}>\s?/gm, '$1')
+       // .replace(/(^|\n)\s{0,3}>\s?/g, '\n\n')
+@@ -68,7 +68,7 @@ module.exports = function(md, options) {
+       .replace(/^(\n)?\s{0,}#{1,6}\s*( (.+))? +#+$|^(\n)?\s{0,}#{1,6}\s*( (.+))?$/gm, '$1$3$4$6')
+       // Remove * emphasis
+       .replace(/([\*]+)(\S)(.*?\S)??\1/g, '$2$3')
+-      // Remove _ emphasis. Unlike *, _ emphasis gets rendered only if 
++      // Remove _ emphasis. Unlike *, _ emphasis gets rendered only if
+       //   1. Either there is a whitespace character before opening _ and after closing _.
+       //   2. Or _ is at the start/end of the string.
+       .replace(/(^|\W)([_]+)(\S)(.*?\S)??\2($|\W)/g, '$1$3$4$5')

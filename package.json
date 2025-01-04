@@ -37,5 +37,10 @@
     "prettier": "^3.4.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "remove-markdown@0.6.0": "patches/remove-markdown@0.6.0.patch"
+    }
   }
 }

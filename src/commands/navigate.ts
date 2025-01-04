@@ -20,6 +20,7 @@ export const navigateCommand = async (ctx: Context) => {
 /industry${'\u2002'.repeat(5)}行业领袖
 /ai_agent${'\u2002'.repeat(5)}AI Agent赛道
 /keyword${'\u2002'.repeat(5)}关键词搜索
+/kol${'\u2002'.repeat(10)}kol搜索
     `.trim(),
     {
       ...keyboard,

@@ -2,19 +2,17 @@ import { Scenes } from 'telegraf'
 import { startTwitterAuth } from '~/src/twitter/'
 import { cleanMarkdown } from '../utils/markdown'
 
-export const keywordScene = new Scenes.BaseScene<Scenes.SceneContext>(
-  'keyword_scene',
-)
+export const kolScene = new Scenes.BaseScene<Scenes.SceneContext>('kol_scene')
 
-keywordScene.enter(async (ctx) => {
-  await ctx.reply('请输入关键字')
+kolScene.enter(async (ctx) => {
+  await ctx.reply('请输入kol推特名')
 })
 
-keywordScene.on('text', async (ctx) => {
+kolScene.on('text', async (ctx) => {
   const twitterManager = await startTwitterAuth()
   const msg = ctx.message.text
 
-  const content = await twitterManager.handleTwitterSearchList(msg, 'keyword')
+  const content = await twitterManager.handleTwitterKolList(msg, 'kol')
   await ctx.reply(cleanMarkdown(content))
   await ctx.scene.leave()
 })

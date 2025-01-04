@@ -1,6 +1,6 @@
 import type { Context } from 'telegraf'
 import { startTwitterAuth } from '~/src/twitter/'
-import { removeMd } from '../utils/markdown'
+import { cleanMarkdown } from '../utils/markdown'
 
 export const lotteryCommand = async (ctx: Context) => {
   const twitterManager = await startTwitterAuth()
@@ -8,5 +8,5 @@ export const lotteryCommand = async (ctx: Context) => {
     `1874802804604481951`,
     'lottery',
   )
-  await ctx.reply(removeMd(content))
+  await ctx.reply(cleanMarkdown(content))
 }

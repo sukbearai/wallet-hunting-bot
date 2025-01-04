@@ -9,11 +9,12 @@ import { startCommand } from './start'
 const commands: Record<string, (ctx: Context) => Promise<void> | void> = {
   start: startCommand,
   navigate: navigateCommand,
-  ai_agent: aiAgentCommand,
-  industry: industryCommand,
   lottery: lotteryCommand,
   project: projectCommand,
+  industry: industryCommand,
+  ai_agent: aiAgentCommand,
   keyword: (ctx: any) => ctx.scene.enter('keyword_scene'),
+  kol: (ctx: any) => ctx.scene.enter('kol_scene'),
 }
 
 export const registerCommands = (
