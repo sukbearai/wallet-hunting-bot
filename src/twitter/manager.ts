@@ -251,7 +251,10 @@ export class TwitterManager {
         const gptSummarizeTweets = await $fetch<APIResponse>(
           `/fastgpt/summarize/${encodeURIComponent(fileUrl)}`,
         )
-        return gptSummarizeTweets.choices[0].message.content
+        return (
+          gptSummarizeTweets.choices[0].message.content ??
+          'AI summarization failed'
+        )
       })
       return summarizeResult
     } catch (error) {
