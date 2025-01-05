@@ -6,6 +6,11 @@ import { consola } from './log'
 import { uploadToAliOss } from './oss'
 import { stringToUuid } from './uuid'
 
+type ProcessedTweet = Omit<Tweet, 'photos' | 'videos'> & {
+  photos?: Tweet['photos']
+  videos?: Tweet['videos']
+}
+
 export const getCurrentDir = () => {
   const __filename = fileURLToPath(import.meta.url)
   const __dirname = dirname(__filename)
@@ -36,26 +41,21 @@ export async function writeTweetsTxt(
 
   const tweetsArray = Array.isArray(tweets) ? tweets : [tweets]
 
-  const tweetsTxtContent = filterTodayTweets(tweetsArray)
+  // token limit
+  const filteredTweets = filterTweetsByTokenLimit(
+    filterTodayTweets(tweetsArray),
+  )
+
+  const tweetsTxtContent = `[${filteredTweets
     .map((tweet) => {
-      return `${JSON.stringify(tweet)}`
+      return JSON.stringify(tweet)
     })
-    .join('')
+    .join(',')}]`
 
   fs.appendFileSync(logFile, tweetsTxtContent)
 
   const ossUrl = await uploadToAliOss(logFile, filePrefix)
 
-  // const url = `${telegram.tunnelUrl}${logFile.replace(/^\./, '')}`
-  // const url = `${telegram.tunnelUrl}/fastgpt/file/${filePrefix}/${fileName}.txt`
-
-  // if (!import.meta.dev) {
-  //   const rootDir = path.resolve(getCurrentDir(), '../../')
-  //   const srcDir = path.join(rootDir, 'public')
-  //   const destDir = path.join(rootDir, '.output/public')
-  //   copyDirSync(srcDir, destDir)
-  //   consola.log(`The output/public directory was successfully replaced ${url}`)
-  // }
   consola.log(`The file has been uploaded ${ossUrl}`)
   return ossUrl
 }
@@ -93,4 +93,34 @@ export function copyDirSync(src: string, dest: string) {
       fs.copyFileSync(srcPath, destPath)
     }
   })
+}
+
+function filterTweetsByTokenLimit(
+  tweets: ProcessedTweet[],
+  maxTokens: number = 128000,
+): ProcessedTweet[] {
+  let totalTokens = 0
+
+  const totalContent = JSON.stringify(tweets)
+  totalTokens = estimateTokens(totalContent)
+
+  if (totalTokens <= maxTokens) {
+    return tweets
+  }
+
+  consola.warn(
+    `The total tokens of tweets is ${totalTokens}, exceed the limit ${maxTokens}`,
+  )
+  return tweets
+    .map((tweet) => {
+      const processedTweet = { ...tweet }
+      delete processedTweet.photos
+      delete processedTweet.videos
+      return processedTweet
+    })
+    .slice(0, 200)
+}
+
+function estimateTokens(text: string): number {
+  return Math.ceil(text.length / 1)
 }

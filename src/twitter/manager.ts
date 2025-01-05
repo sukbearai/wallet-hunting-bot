@@ -252,7 +252,7 @@ export class TwitterManager {
           `/fastgpt/summarize/${encodeURIComponent(fileUrl)}`,
         )
         return (
-          gptSummarizeTweets.choices[0].message.content ??
+          gptSummarizeTweets.choices[0].message.content ||
           'AI summarization failed'
         )
       })
