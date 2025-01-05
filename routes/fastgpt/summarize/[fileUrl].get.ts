@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
         content: [
           {
             type: 'text',
-            text: '总结和分析txt文件内的推文数据',
+            text: '总结和分析txt文件内的JSON推文数据',
           },
           {
             type: 'file_url',
