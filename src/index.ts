@@ -7,11 +7,16 @@ import { registerScenes } from './scenes'
 
 const { telegram } = useRuntimeConfig()
 
-export const bot = new Telegraf<Scenes.SceneContext>(telegram.botToken, {
-  telegram: {
-    agent: new SocksProxyAgent(telegram.proxyUrl),
-  },
-})
+export const bot = new Telegraf<Scenes.SceneContext>(
+  telegram.botToken,
+  telegram.proxyUrl
+    ? {
+        telegram: {
+          agent: new SocksProxyAgent(telegram.proxyUrl),
+        },
+      }
+    : undefined,
+)
 
 registerMiddlewares(bot)
 registerScenes(bot)
