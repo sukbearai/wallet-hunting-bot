@@ -1,8 +1,10 @@
 import type { Scenes, Telegraf } from 'telegraf'
-import { session } from 'telegraf'
+import { authMiddleware } from './auth'
+import { sessionMiddleware } from './session'
 
 export const registerMiddlewares = (
   bot: Telegraf<Scenes.SceneContext<Scenes.SceneSessionData>>,
 ) => {
-  bot.use(session())
+  sessionMiddleware(bot)
+  authMiddleware(bot)
 }
