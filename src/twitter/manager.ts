@@ -200,7 +200,7 @@ export class TwitterManager {
       return content
     } catch (error) {
       consola.error(`Error handling Twitter list ${listId}:`, error)
-      return ''
+      return 'error'
     }
   }
 
@@ -217,7 +217,7 @@ export class TwitterManager {
       return content
     } catch (error) {
       consola.error(`Error searching Twitter for ${keyword}:`, error)
-      return ''
+      return 'error'
     }
   }
 
@@ -241,7 +241,7 @@ export class TwitterManager {
       return content
     } catch (error) {
       consola.error(`Error handling Twitter KOL ${kol}:`, error)
-      return ''
+      return 'error'
     }
   }
 
@@ -264,7 +264,7 @@ export class TwitterManager {
       return summarizeResult
     } catch (error) {
       consola.error(`Error AI summarizing tweets from ${fileUrl}:`, error)
-      return ''
+      return 'error'
     }
   }
 
