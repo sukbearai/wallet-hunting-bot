@@ -268,7 +268,7 @@ export class TwitterManager {
     }
   }
 
-  async fetchProfile(username: string): Promise<TwitterProfile | string> {
+  async fetchProfile(username: string): Promise<TwitterProfile | null> {
     try {
       const profile = await this.requestQueue.add(async () => {
         const profile = await this.twitterClient.getProfile(username)
@@ -286,7 +286,7 @@ export class TwitterManager {
     } catch (error) {
       console.error('Error fetching Twitter profile:', error)
 
-      return 'error'
+      return null
     }
   }
 

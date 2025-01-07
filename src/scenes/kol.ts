@@ -16,7 +16,7 @@ kolScene.on('text', async (ctx) => {
   const profile = (await twitterManager.fetchProfile(msg)) as TwitterProfile
   const content = await twitterManager.handleTwitterKolList(msg, 'kol')
 
-  if (profile?.screenName) {
+  if (profile) {
     await ctx.replyWithMediaGroup([
       {
         type: 'photo',
