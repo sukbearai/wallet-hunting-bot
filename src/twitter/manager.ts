@@ -9,7 +9,7 @@ import { writeTweetsTxt } from '~/src/utils/file'
 import { consola } from '~/src/utils/log'
 import { RequestQueue } from './queue'
 
-interface TwitterProfile {
+export interface TwitterProfile {
   id: string
   username: string
   screenName: string
@@ -268,7 +268,7 @@ export class TwitterManager {
     }
   }
 
-  async fetchProfile(username: string): Promise<TwitterProfile | null> {
+  async fetchProfile(username: string): Promise<TwitterProfile | string> {
     try {
       const profile = await this.requestQueue.add(async () => {
         const profile = await this.twitterClient.getProfile(username)
@@ -286,7 +286,7 @@ export class TwitterManager {
     } catch (error) {
       console.error('Error fetching Twitter profile:', error)
 
-      return null
+      return 'error'
     }
   }
 
