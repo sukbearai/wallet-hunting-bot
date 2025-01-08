@@ -1,6 +1,7 @@
 import type { TwitterProfile } from '../twitter/manager'
 import { Scenes } from 'telegraf'
 import { startTwitterAuth } from '~/src/twitter/'
+import { consola } from '../utils/log'
 import { cleanMarkdown } from '../utils/markdown'
 
 export const kolScene = new Scenes.BaseScene<Scenes.SceneContext>('kol_scene')
@@ -16,7 +17,7 @@ kolScene.on('text', async (ctx) => {
   const profile = (await twitterManager.fetchProfile(msg)) as TwitterProfile
   const content = await twitterManager.handleTwitterKolList(msg, 'kol')
 
-  if (profile) {
+  if (profile.banner) {
     await ctx.replyWithMediaGroup([
       {
         type: 'photo',
