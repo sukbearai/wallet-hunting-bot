@@ -1,7 +1,6 @@
 import type { TwitterProfile } from '../twitter/manager'
 import { Scenes } from 'telegraf'
 import { startTwitterAuth } from '~/src/twitter/'
-import { consola } from '../utils/log'
 import { cleanMarkdown } from '../utils/markdown'
 
 export const kolScene = new Scenes.BaseScene<Scenes.SceneContext>('kol_scene')
